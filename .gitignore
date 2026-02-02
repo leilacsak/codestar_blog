@@ -1,3 +1,6 @@
 .venv/
 env.py
 blog/fixtures/
+staticfiles/
+__pycache__/
+*.pyc
