@@ -33,7 +33,7 @@ def post_detail(request, slug):
     comment_count = post.comments.filter(approved=True).count()
     comment_form = CommentForm()
     if request.method == "POST":
-        print("Received a POST request")
+       
         comment_form = CommentForm(data=request.POST)
         
         if comment_form.is_valid():
@@ -48,8 +48,7 @@ def post_detail(request, slug):
         )
 
         comment_form = CommentForm()
-    print("About to render the post detail template")
-
+    
     return render(
         request,
         "blog/post_detail.html",
@@ -73,10 +72,10 @@ def comment_edit(request, slug, comment_id):
         post = get_object_or_404(queryset, slug=slug)
         comment = get_object_or_404(Comment, pk=comment_id)
         comment_form = CommentForm(data=request.POST, instance=comment)
-
+        
         if comment_form.is_valid() and comment.author == request.user:
             comment = comment_form.save(commit=False)
-            comment.post = post
+            comment.post = post  
             comment.approved = False
             comment.save()
             messages.add_message(request, messages.SUCCESS, 'Comment Updated!')
@@ -87,6 +86,7 @@ def comment_edit(request, slug, comment_id):
             )
 
     return HttpResponseRedirect(reverse('post_detail', args=[slug]))
+
 
 def comment_delete(request, slug, comment_id):
     """
@@ -100,6 +100,9 @@ def comment_delete(request, slug, comment_id):
         comment.delete()
         messages.add_message(request, messages.SUCCESS, 'Comment deleted!')
     else:
-        messages.add_message(request, messages.ERROR, 'You can only delete your own comments!')
+        messages.add_message(
+            request, messages.ERROR,
+            'You can only delete your own comments!'
+        )
 
     return HttpResponseRedirect(reverse('post_detail', args=[slug]))
